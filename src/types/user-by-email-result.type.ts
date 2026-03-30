@@ -1,3 +1,3 @@
-import type { prisma } from "../libs/prisma.lib";
+import type { User } from "../generated/prisma/client";
 
-export type UserByEmailResult = Awaited<ReturnType<typeof prisma.user.findUnique>>;
+export type UserByEmailResult = User | null;
