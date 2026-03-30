@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+dist/
+build/
+.env
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+coverage/
+*.tsbuildinfo
+.idea/
+.vscode/
+*.tgz
+
+# Optional: OS or editor files
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: test output
+/jest-test-results.json
