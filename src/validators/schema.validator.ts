@@ -10,11 +10,12 @@ import type { NameAndEmail } from "../types/name-and-email.type";
 import { signupSchema } from "../schemas/auth-signup.schema";
 import type { OTP } from "../types/otp.type";
 import { validateOtpSchema } from "../schemas/auth-validate-otp.schema";
+import { getInvalidResult } from "../helpers/result.helper";
 
 export const signIn = (request: Request): Result<Email> => {
     if (!request.body) {
         const statusCode: number = 400;
-        const invalidResult: InvalidResult = getFieldError(statusCode, {
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, {
             body: ["O corpo da requisição é obrigatório"]
         });
 
@@ -27,7 +28,7 @@ export const signIn = (request: Request): Result<Email> => {
     if (!result.success) {
         const statusCode: number = 400;
         const errors: Record<string, string[]> = getZodErrors(result);
-        const invalidResult: InvalidResult = getFieldError(statusCode, errors);
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, errors);
         
         return invalidResult;
     }
@@ -43,7 +44,7 @@ export const signIn = (request: Request): Result<Email> => {
 export const signUp = (request: Request): Result<NameAndEmail> => {
     if (!request.body) {
         const statusCode: number = 400;
-        const invalidResult: InvalidResult = getFieldError(statusCode, {
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, {
             body: ["O corpo da requisição é obrigatório"]
         });
         return invalidResult;
@@ -55,7 +56,7 @@ export const signUp = (request: Request): Result<NameAndEmail> => {
     if (!result.success) {
         const statusCode: number = 400;
         const errors: Record<string, string[]> = getZodErrors(result);
-        const invalidResult: InvalidResult = getFieldError(statusCode, errors);
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, errors);
 
         return invalidResult;
     }
@@ -71,7 +72,7 @@ export const signUp = (request: Request): Result<NameAndEmail> => {
 export const validateOtp = (request: Request): Result<OTP> => {
     if (!request.body) {
         const statusCode: number = 400;
-        const invalidResult: InvalidResult = getFieldError(statusCode, {
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, {
             body: ["O corpo da requisição é obrigatório"]
         });
         return invalidResult;
@@ -83,7 +84,7 @@ export const validateOtp = (request: Request): Result<OTP> => {
     if (!result.success) {
         const statusCode: number = 400;
         const errors: Record<string, string[]> = getZodErrors(result);
-        const invalidResult: InvalidResult = getFieldError(statusCode, errors);
+        const invalidResult: InvalidResult = getInvalidResult(statusCode, errors);
 
         return invalidResult;
     }
@@ -94,18 +95,4 @@ export const validateOtp = (request: Request): Result<OTP> => {
     };
 
     return validResult;
-}
-
-export const getFieldError = (statusCode: number, errors: Record<string, string[]>): InvalidResult => {
-    const invalidResult: InvalidResult = {
-        success: false,
-        error: {
-            statusCode,
-            messages: {
-                ...errors,
-            },
-        }
-    };
-
-    return invalidResult;
 }
