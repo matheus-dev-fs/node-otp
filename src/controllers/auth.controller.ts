@@ -8,6 +8,7 @@ import type { PublicUser } from "../types/public-user.type";
 import type { Otp } from "../generated/prisma/client";
 import { sendEmail } from "../libs/mailtrap.lib";
 import type { NameAndEmail } from "../types/name-and-email.type";
+import type { OTP } from "../types/otp.type";
 
 export const signin: RequestHandler = async (req, res): Promise<void> => {
     const reqValidationResult: Result<Email> = authValidators.signIn(req);
@@ -80,3 +81,23 @@ export const signup: RequestHandler = async (req, res): Promise<void> => {
     const user: PublicUser = createUserResult.data;
     res.status(201).json(user);
 }
+
+export const validateOtp: RequestHandler = async (req, res): Promise<void> => {
+    const reqValidationResult: Result<OTP> = authValidators.validateOtp(req);
+
+    if (!reqValidationResult.success) {
+        res.status(reqValidationResult.error.statusCode).json(reqValidationResult.error.messages);
+        return;
+    }
+
+    const { code, id }: OTP = reqValidationResult.data;
+    const validateOtpResult: Result<PublicUser> = await otpService.validateOTP(id, code);
+
+    if (!validateOtpResult.success) {
+        res.status(validateOtpResult.error.statusCode).json(validateOtpResult.error.messages);
+        return;
+    }
+
+    const user: PublicUser = validateOtpResult.data;
+    res.status(200).json(user);
+};
