@@ -9,6 +9,7 @@ import type { Otp } from "../generated/prisma/client";
 import { sendEmail } from "../libs/mailtrap.lib";
 import type { NameAndEmail } from "../types/name-and-email.type";
 import type { OTP } from "../types/otp.type";
+import { createJwt } from "../libs/jwt.lib";
 
 export const signin: RequestHandler = async (req, res): Promise<void> => {
     const reqValidationResult: Result<Email> = authValidators.signIn(req);
@@ -99,5 +100,7 @@ export const validateOtp: RequestHandler = async (req, res): Promise<void> => {
     }
 
     const user: PublicUser = validateOtpResult.data;
-    res.status(200).json(user);
+    const token: string = createJwt(user.id);
+
+    res.status(200).json({ token, user });
 };
