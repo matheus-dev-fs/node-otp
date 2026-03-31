@@ -6,6 +6,7 @@ import type { Email } from "../types/email.type";
 import type { Result } from "../types/result/result.type";
 import type { PublicUser } from "../types/public-user.type";
 import type { Otp } from "../generated/prisma/client";
+import { sendEmail } from "../libs/mailtrap.lib";
 
 export const signin: RequestHandler = async (req, res): Promise<void> => {
     const result: Result<Email> = authValidators.signIn(req);
@@ -32,6 +33,17 @@ export const signin: RequestHandler = async (req, res): Promise<void> => {
     }
 
     const otp: Otp = otpResult.data;
+
+    const sendEmailResult: Result<boolean> = await sendEmail(
+        user.email, 
+        "Código de verificação", 
+        `Seu código de verificação é: ${otp.code}`
+    );
+
+    if (!sendEmailResult.success) {
+        res.status(sendEmailResult.error.statusCode).json(sendEmailResult.error.messages);
+        return;
+    }
 
     res.status(200).json({ id: otp.id });
 };
