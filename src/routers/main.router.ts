@@ -7,5 +7,6 @@ const mainRouter: Router = Router();
 mainRouter.get("/ping", pingController.ping);
 
 mainRouter.post('/auth/signin', authController.signin);
+mainRouter.post('/auth/signup', authController.signup);
 
 export default mainRouter;
